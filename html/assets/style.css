@@ -1,0 +1,207 @@
+/* https://git.m5ka.dev/maria/m5ka.dev
+ * (c) 2023 Maria Budek
+ * License: BSD 2-Clause
+ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+    --font-medium: 1.6rem;
+
+    --max-width: 768px;
+
+    --charcoal: #303031;
+    --cream: #f9f8fd;
+    --grey: #bfbfbf;
+    --blue: #8acfe2;
+    --pink: #fca8df;
+    --gradient: linear-gradient(90deg, var(--blue) 0%, var(--pink) 100%);
+}
+
+::selection {
+    background-color: var(--cream);
+    -webkit-text-fill-color: var(--charcoal);
+    color: var(--charcoal);
+}
+
+html {
+    font-size: 62.5%;
+    line-height: 1.5;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background: var(--charcoal);
+    font-family: var(--font-stack);
+    color: var(--cream);
+    font-size: var(--font-medium);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 3rem;
+    padding: 4.8rem 2.4rem;
+}
+
+.gradient {
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+a {
+    color: var(--cream);
+    text-decoration: wavy underline;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--grey);
+}
+
+a:hover {
+    color: var(--pink);
+    text-decoration-color: var(--pink);
+}
+
+.subtle {
+    color: var(--grey);
+}
+
+.emoji {
+    -webkit-text-fill-color: initial;
+}
+
+header {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    row-gap: 1.6rem;
+}
+
+@media(min-width: 768px) {
+    header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        column-gap: 2.4rem;
+    }
+}
+
+header > section > img {
+    max-width: 128px;
+    border-radius: 50%;
+}
+
+header > section {
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 1.2rem;
+}
+
+header > section h1 {
+    font-size: 3.2rem;
+    font-weight: bold;
+    width: fit-content;
+}
+
+header > section h2 {
+    font-size: 2.4rem;
+    color: var(--grey);
+}
+
+header > section > p i {
+    margin-right: .4rem;
+}
+
+main {
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 4.8rem;
+}
+
+main > section {
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 1.2rem;
+}
+
+main > section > h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    letter-spacing: .1rem;
+    text-transform: uppercase;
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: fit-content;
+}
+
+.divider {
+    display: inline-block;
+    margin-inline: 1.2rem;
+    color: var(--grey);
+}
+
+.bold {
+    font-weight: bold;
+}
+
+ul.list-in-list {
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 2.4rem;
+}
+
+ul.list-in-list > li {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+ul.list-in-list > li > h3 {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: var(--grey);
+}
+
+ul.list-in-list > li > h4 {
+    color: var(--grey);
+    margin-top: .4rem;
+}
+
+ul.list-in-list > li > ul {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 1.2rem;
+    padding-left: 2.6rem;
+    list-style: disc;
+}
+
+ul.list {
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: 2.4rem;
+}
+
+ul.list > li {
+    display: flex;
+    flex-flow: column nowrap;
+    row-gap: .8rem;
+}
+
+ul.list > li > h3 {
+    font-size: 1.7rem;
+    color: var(--grey);
+    font-weight: bold;
+}
+
+ul.grid-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2.4rem;
+}
