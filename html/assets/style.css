@@ -18,6 +18,7 @@
     --grey: #bfbfbf;
     --blue: #8acfe2;
     --pink: #fca8df;
+    --dusty-pink: #e2bbd4;
     --gradient: linear-gradient(90deg, var(--blue) 0%, var(--pink) 100%);
 }
 
@@ -65,6 +66,10 @@ a {
 a:hover {
     color: var(--pink);
     text-decoration-color: var(--pink);
+}
+
+strong {
+    color: var(--dusty-pink);
 }
 
 .subtle {
@@ -129,7 +134,23 @@ main > section {
     row-gap: 1.2rem;
 }
 
-main > section > h2 {
+.heading {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    column-gap: .4rem;
+}
+
+.heading .heading-link {
+    display: none;
+}
+
+.heading:hover .heading-link {
+    display: inline;
+}
+
+main > section > h2,
+main > section > .heading > h2 {
     font-size: 1.6rem;
     font-weight: bold;
     letter-spacing: .1rem;
@@ -162,13 +183,15 @@ ul.list-in-list > li {
     flex-flow: column nowrap;
 }
 
-ul.list-in-list > li > h3 {
+ul.list-in-list > li > h3,
+ul.list-in-list > li > .heading > h3 {
     font-size: 1.7rem;
     font-weight: bold;
     color: var(--grey);
 }
 
-ul.list-in-list > li > h4 {
+ul.list-in-list > li > h4,
+ul.list-in-list > li > .heading > h4 {
     color: var(--grey);
     margin-top: .4rem;
 }
@@ -194,7 +217,8 @@ ul.list > li {
     row-gap: .8rem;
 }
 
-ul.list > li > h3 {
+ul.list > li > h3,
+ul.list > li > .heading > h3 {
     font-size: 1.7rem;
     color: var(--grey);
     font-weight: bold;
@@ -204,4 +228,19 @@ ul.grid-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 2.4rem;
+}
+
+.flex {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    column-gap: 2rem;
+}
+
+.small {
+    font-size: 90%;
+}
+
+.mb {
+    margin-bottom: .6rem;
 }
