@@ -14,6 +14,7 @@
     --max-width: 768px;
 
     --charcoal: #303031;
+    --light-charcoal: #454545;
     --cream: #f9f8fd;
     --grey: #bfbfbf;
     --blue: #8acfe2;
@@ -36,7 +37,9 @@ html {
 }
 
 body {
-    background: var(--charcoal);
+    background-color: var(--charcoal);
+    background-image: radial-gradient(circle at top, #16282d 0%, var(--charcoal) 100%);
+    background-attachment: fixed;
     font-family: var(--font-stack);
     color: var(--cream);
     font-size: var(--font-medium);
@@ -109,7 +112,6 @@ header > section {
 
 header > section h1 {
     font-size: 3.2rem;
-    font-weight: bold;
     width: fit-content;
 }
 
@@ -125,7 +127,7 @@ header > section > p i {
 main {
     display: flex;
     flex-flow: column nowrap;
-    row-gap: 4.8rem;
+    row-gap: 6.2rem;
 }
 
 main > section {
@@ -243,4 +245,8 @@ ul.grid-list {
 
 .mb {
     margin-bottom: .6rem;
+}
+
+.mb-lg {
+    margin-bottom: 1.6rem;
 }
