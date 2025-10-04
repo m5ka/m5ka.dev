@@ -51,6 +51,99 @@ body {
     padding: 4.8rem 2.4rem;
 }
 
+body[data-scroll="0"] .scroll-glow {
+    filter: none;
+}
+
+.scroll-glow {
+    filter: opacity(0);
+    opacity: 0;
+    transition: filter 1s ease-in-out;
+    animation: scroll-glow 5s ease-in-out infinite;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 8.4rem;
+    background: linear-gradient(0deg, #32898666 0%, #32898633 40%, #32898609 80%, #32898600 100%);
+    transform: rotateX(-20deg);
+    z-index: 990;
+    pointer-events: none;
+}
+
+body[data-scroll="0"] .scroll-arrow {
+    opacity: .5;
+}
+
+.scroll-arrow {
+    opacity: 0;
+    transition: opacity .5s ease-in-out;
+    width: 1em;
+    height: 1em;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 2.8rem;
+    left: 49%;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 995;
+    filter: grayscale(1) sepia(70%) hue-rotate(60deg);
+    animation: scroll-arrow 3s ease-in-out infinite;
+    font-size: 1.8rem;
+    user-select: none;
+    pointer-events: none;
+}
+
+@keyframes scroll-glow {
+    0%, 100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes scroll-arrow {
+    0%, 100% {
+        bottom: 2.8rem;
+    }
+
+    50% {
+        bottom: 1.2rem;
+    }
+}
+
+.bio {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 2.4rem;
+    align-items: center;
+}
+
+.bio__image {
+    border-radius: 50%;
+}
+
+.bio__heading {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.bio__subheading {
+    margin-bottom: 2.6rem;
+}
+
+.bio__links {
+    display: flex;
+    flex-flow: row nowrap;
+    column-gap: 1.6rem;
+}
+
 .gradient {
     background: var(--gradient);
     background-clip: text;
@@ -84,19 +177,26 @@ strong {
 }
 
 header {
+    min-height: 100vh;
     display: flex;
     flex-flow: column nowrap;
+    justify-content: center;
     align-items: center;
-    row-gap: 1.6rem;
 }
 
-@media(min-width: 768px) {
-    header {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        column-gap: 2.4rem;
-    }
+header h1 {
+    font-size: calc(var(--font-medium) * 2);
+    font-weight: bold;
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: fit-content;
+    margin-block-end: 1rem;
+}
+
+header h2 {
+    padding-block-end: 3.6rem;
 }
 
 header > section > img {

@@ -7,29 +7,29 @@
         <link rel="stylesheet" href="assets/reset.css" type="text/css">
         <link rel="stylesheet" href="assets/style.css" type="text/css">
     </head>
-    <body>
+    <body data-scroll="1">
+        <div class="scroll-glow"></div>
+        <div class="scroll-arrow">⬇️</div>
         <header>
-            <section>
-                <img src="assets/me.webp" alt="a picture of me">
-            </section>
-            <section>
-                <h1>Hey, I'm <span class="gradient bold">Maria</span>.</h1>
-            </section>
-            <section>
-                <p><i>📌</i> Beds, UK</p>
-            </section>
+            <h1>m5ka</h1>
+            <h2>software engineer</h2>
         </header>
         <main>
-            <section>
-                <p class="bold">I'm a UK-based software engineer.</p>
-		        <p class="mb-lg">I am passionate about the work I do and I'd love to hear from you if you have a project you'd like me to get involved in.</p>
-                <div class="flex">
-                    <p>
-                        🌸 <a href="https://github.com/m5ka" target="_blank" rel="me noreferrer noopener nofollow">github.com/m5ka</a>
-                    </p>
-                    <p>
-                        🌍 <a href="https://www.linkedin.com/in/m5ka/" target="_blank" rel="me noreferrer noopener nofollow">linkedin.com/in/m5ka</a>
-                    </p>
+            <section class="bio">
+                <aside>
+                    <img class="bio__image" src="assets/me.webp" alt="A picture of me" width="128">
+                </aside>
+                <div>
+                    <p class="bio__heading">I'm a UK-based software engineer.</p>
+                    <p class="bio__subheading">I am passionate about the work I do and I'd love to hear from you if you have a project you'd like me to get involved in.</p>
+                    <div class="bio__links">
+                        <p>
+                            🌸 <a href="https://github.com/m5ka" target="_blank" rel="me noreferrer noopener nofollow">github.com/m5ka</a>
+                        </p>
+                        <p>
+                            🌍 <a href="https://www.linkedin.com/in/m5ka/" target="_blank" rel="me noreferrer noopener nofollow">linkedin.com/in/m5ka</a>
+                        </p>
+                    </div>
                 </div>
             </section>
             <section>
@@ -223,5 +223,16 @@
                 </ul>
             </section>
         </main>
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+        <script type="text/javascript">
+            const body = document.querySelector("body");
+            function storeScroll() {
+                body.dataset.scroll = Math.floor(window.scrollY).toString();
+            }
+            document.addEventListener("DOMContentLoaded", () => {
+                storeScroll();
+                window.addEventListener("scroll", _.debounce(storeScroll));
+            });
+        </script>
     </body>
 </html>
