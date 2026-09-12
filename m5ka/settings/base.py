@@ -3,7 +3,6 @@ from pathlib import Path
 
 from environs import Env
 
-
 env = Env(prefix="M5KA_")
 env.read_env()
 
@@ -25,6 +24,8 @@ INSTALLED_APPS = [
     "m5ka.core",
     "m5ka.home",
     "m5ka.search",
+    "wagtail_localize",
+    "wagtail_localize.locales",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.contrib.settings",
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
@@ -65,9 +67,7 @@ ROOT_URLCONF = "m5ka.core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            PROJECT_DIR / "templates",
-        ],
+        "DIRS": [PROJECT_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -76,9 +76,9 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
-            ],
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "m5ka.core.wsgi.application"
@@ -95,9 +95,7 @@ DATABASES = {
         "PASSWORD": env("POSTGRES_PASSWORD"),
         "HOST": env("POSTGRES_HOST", "localhost"),
         "PORT": env("POSTGRES_PORT", "5432"),
-        "OPTIONS": {
-            "pool": True,
-        },
+        "OPTIONS": {"pool": True},
     }
 }
 
@@ -107,17 +105,13 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        )
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
@@ -130,13 +124,14 @@ AUTH_USER_MODEL = "m5ka_core.User"
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = "en-gb"
-
+LANGUAGE_CODE = "en"
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
+WAGTAIL_I18N_ENABLED = True
 USE_TZ = True
+LOCALE_PATHS = [PROJECT_DIR / "locale"]
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [("en", "English"), ("pl", "Polish")]
 
 
 # Static files (CSS, JavaScript, Images)
@@ -147,9 +142,7 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
 
-STATICFILES_DIRS = [
-    PROJECT_DIR / "static",
-]
+STATICFILES_DIRS = [PROJECT_DIR / "static"]
 
 STATIC_ROOT = BASE_DIR / "static"
 STATIC_URL = env("STATIC_URL", "/static/")
@@ -164,8 +157,8 @@ STORAGES = {
     },
 }
 
-# Django sets a maximum of 1000 fields per form by default, but particularly complex page models
-# can exceed this limit within Wagtail's page editor.
+# Django sets a maximum of 1000 fields per form by default, but particularly complex
+# page models can exceed this limit within Wagtail's page editor.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 
@@ -175,11 +168,7 @@ WAGTAIL_SITE_NAME = env("SITE_NAME", "m5ka.dev")
 
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
-WAGTAILSEARCH_BACKENDS = {
-    "default": {
-        "BACKEND": "wagtail.search.backends.database",
-    }
-}
+WAGTAILSEARCH_BACKENDS = {"default": {"BACKEND": "wagtail.search.backends.database"}}
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
@@ -189,7 +178,18 @@ WAGTAILADMIN_BASE_URL = env("BASE_URL")
 # This can be omitted to allow all files, but note that this may present a security risk
 # if untrusted users are allowed to upload files -
 # see https://docs.wagtail.org/en/stable/advanced_topics/deploying.html#user-uploaded-files
-WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
+WAGTAILDOCS_EXTENSIONS = [
+    "csv",
+    "docx",
+    "key",
+    "odt",
+    "pdf",
+    "pptx",
+    "rtf",
+    "txt",
+    "xlsx",
+    "zip",
+]
 
 # Maximum upload size for documents in bytes.
 WAGTAILDOCS_MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB

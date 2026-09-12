@@ -24,6 +24,7 @@
   --m5ka-text-subtle: var(--m5ka-stone);
   --m5ka-link: var(--m5ka-accent-500);
   --m5ka-border: var(--m5ka-pigeon);
+  --m5ka-border-subtle: var(--m5ka-slate);
 
   /* Sizing */
   --m5ka-font-sm: 1.4rem;
@@ -65,6 +66,12 @@ body {
   background-attachment: fixed;
   color: var(--m5ka-text);
   line-height: 1.6;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+body > * {
+  width: 100%;
 }
 
 /* Spinning animation */
@@ -192,6 +199,26 @@ body {
     color: var(--m5ka-text-subtle);
   }
 
+  .header__translations {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    column-gap: var(--m5ka-spacing);
+    font-size: var(--m5ka-font-sm);
+  }
+
+  .header__translation {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    column-gap: calc(var(--m5ka-spacing) / 3);
+    color: var(--m5ka-white);
+  }
+
+  .header__translation:hover {
+    color: var(--m5ka-accent-500);
+  }
+
   .header__nav {
     display: flex;
     flex-flow: row wrap;
@@ -212,6 +239,7 @@ body {
     margin-inline: auto;
     padding-inline: var(--m5ka-content-gutter);
     max-width: var(--m5ka-content-width-narrow);
+    flex-grow: 1;
   }
 
   .main--wide {
@@ -225,6 +253,15 @@ body {
 
   .main > * + * {
     margin-block-start: calc(var(--m5ka-spacing) * 1.5);
+  }
+
+  .blog-title {
+    font-size: var(--m5ka-font-lg);
+  }
+
+  .blog-title span {
+    color: var(--m5ka-text-subtle);
+    font-family: var(--m5ka-font-body);
   }
 
   .hero {
@@ -281,6 +318,33 @@ body {
     }
   }
 
+  .headline-image {
+    width: 100%;
+  }
+
+  .youtube-video {
+    display: block;
+    width: 100%;
+    margin-inline: auto;
+    max-width: 640px;
+    aspect-ratio: 16/9;
+    padding: 0 0 calc(var(--m5ka-spacing) / 2) calc(var(--m5ka-spacing) / 2);
+    border: solid var(--m5ka-border);
+    border-width: 0 0 1px 1px;
+  }
+
+  @media(min-width: 768px) {
+    .youtube-video {
+      width: 76%;
+    }
+  }
+
+  .divider {
+    border: solid var(--m5ka-border-subtle);
+    border-width: 0 0 1px 0;
+    margin-block: calc(var(--m5ka-spacing) * 2) calc(var(--m5ka-spacing) * 3);
+  }
+
   .page-link {
     display: block;
     border: solid var(--m5ka-border);
@@ -296,6 +360,16 @@ body {
 
   .page-link:hover {
     color: var(--m5ka-accent-500);
+  }
+
+  .page-link:has(.page-link__image) {
+    display: grid;
+    grid-template-columns: clamp(16rem, 8rem + 26.667vw, 32rem) 1fr;
+    column-gap: var(--m5ka-spacing);
+  }
+
+  .page-link__image {
+    width: 100%;
   }
 
   .page-link__title {

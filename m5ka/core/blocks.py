@@ -4,6 +4,7 @@ from wagtail.blocks import (
     ListBlock,
     PageChooserBlock,
     RichTextBlock,
+    StaticBlock,
     StreamBlock,
     StructBlock,
 )
@@ -45,6 +46,17 @@ class QuoteBlock(StructBlock):
         template = "blocks/quote.html"
 
 
+class YoutubeEmbedBlock(StructBlock):
+    youtube_video_id = CharBlock(
+        label="YouTube video ID", help_text="This is just the part after ?v= in the URL"
+    )
+
+    class Meta:
+        icon = "media"
+        template = "blocks/youtube_embed.html"
+        label = "YouTube embed"
+
+
 class M5kaBlocks(StreamBlock):
     heading = CharBlock(icon="title", template="blocks/heading.html")
     subheading = CharBlock(icon="h2", template="blocks/subheading.html")
@@ -53,9 +65,9 @@ class M5kaBlocks(StreamBlock):
         features=["bold", "italic", "link"], template="blocks/standout_text.html"
     )
     image = CaptionedImageBlock()
+    youtube_embed = YoutubeEmbedBlock()
+    divider = StaticBlock(icon="minus", template="blocks/divider.html")
     page_link = PageChooserBlock(icon="link", template="blocks/page_link.html")
     page_cards = ListBlock(
-        PageChooserBlock(),
-        icon="table",
-        template="blocks/page_cards.html",
+        PageChooserBlock(), icon="table", template="blocks/page_cards.html"
     )

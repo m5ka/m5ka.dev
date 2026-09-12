@@ -396,6 +396,15 @@ wheels = [
 ]
 
 [[package]]
+name = "gunicorn"
+version = "26.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/8a/e4ef6ee11701b6cd64702848415ffb69eeff85cb388a3c6c7fe86f22f3f8/gunicorn-26.2.0.tar.gz", hash = "sha256:62b864895d9ebff0b2f9867ba04fe811c93121596540830c9c916d0769668447", size = 787921, upload-time = "2026-08-24T15:05:59.3Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/85/7522a52e5e2f42faf1a129113ab63e548c42e103e9af395b7bfe65e403e2/gunicorn-26.2.0-py3-none-any.whl", hash = "sha256:bd249d0b3f7972f7432f0a6b6ff3b3ee2d129f70cd1ff6c09a9dd9e29a2b88e3", size = 228389, upload-time = "2026-08-24T15:05:57.67Z" },
+]
+
+[[package]]
 name = "idna"
 version = "3.19"
 source = { registry = "https://pypi.org/simple" }
@@ -442,9 +451,11 @@ dependencies = [
     { name = "django" },
     { name = "django-storages", extra = ["s3"] },
     { name = "environs" },
+    { name = "gunicorn" },
     { name = "psycopg", extra = ["pool"] },
     { name = "sentry-sdk" },
     { name = "wagtail" },
+    { name = "wagtail-localize" },
 ]
 
 [package.dev-dependencies]
@@ -459,9 +470,11 @@ requires-dist = [
     { name = "django", specifier = ">=6.1,<6.2" },
     { name = "django-storages", extras = ["s3"], specifier = ">=1.14.6" },
     { name = "environs", specifier = ">=15.2.0" },
+    { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "psycopg", extras = ["pool"], specifier = ">=3.3.5" },
     { name = "sentry-sdk", specifier = ">=2.69.1" },
     { name = "wagtail", specifier = ">=8.0" },
+    { name = "wagtail-localize", specifier = ">=1.14.5" },
 ]
 
 [package.metadata.requires-dev]
@@ -634,6 +647,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412, upload-time = "2025-05-15T12:30:07.975Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538, upload-time = "2025-05-15T12:30:06.134Z" },
+]
+
+[[package]]
+name = "polib"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/10/9a/79b1067d27e38ddf84fe7da6ec516f1743f31f752c6122193e7bce38bdbf/polib-1.2.0.tar.gz", hash = "sha256:f3ef94aefed6e183e342a8a269ae1fc4742ba193186ad76f175938621dbfc26b", size = 161658, upload-time = "2023-02-23T17:53:56.873Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6b/99/45bb1f9926efe370c6dbe324741c749658e44cb060124f28dad201202274/polib-1.2.0-py2.py3-none-any.whl", hash = "sha256:1c77ee1b81feb31df9bca258cbc58db1bbb32d10214b173882452c73af06d62d", size = 20634, upload-time = "2023-02-23T17:53:59.919Z" },
 ]
 
 [[package]]
@@ -973,6 +995,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/01/ef/d600737c0687fca22ef14b905bd37f72e264b03be03318ae3157466a09b8/wagtail-8.0.tar.gz", hash = "sha256:8fb2aa39bb8ff9e7709ba848a1bba2fea332ce32368c7ba4820008c0cfcc0019", size = 7131769, upload-time = "2026-08-25T12:37:38.568Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8f/a5/59476b1fa6151a0dcb2cb65bf724b8b8ca11a03f94327262bc3339e0b01e/wagtail-8.0-py3-none-any.whl", hash = "sha256:34dde727917ace7e4ab182054f78f01c2cc24d85ccc402932d3d5c6315a7cd00", size = 9835863, upload-time = "2026-08-25T12:37:31.063Z" },
+]
+
+[[package]]
+name = "wagtail-localize"
+version = "1.14.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "polib" },
+    { name = "typing-extensions" },
+    { name = "wagtail" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/50/09/edc4a6a17edcdf78d2a5bf8395e68f991c709d101aad0ce4fc636b0f9ef0/wagtail_localize-1.14.5.tar.gz", hash = "sha256:7e21bb845bd0142a554a8ddb5819450782107dac94756a90f56085991a4c318d", size = 1189851, upload-time = "2026-08-19T15:11:22.001Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/64/59c70f0c48e37bcec2706963adbe5a577e178bdf56790f10e581ffff8f35/wagtail_localize-1.14.5-py3-none-any.whl", hash = "sha256:c08841d1d982e238b4cf5fb8e5d4cace82cf8e8d255fd0db4fa11dd874d7c0fd", size = 535341, upload-time = "2026-08-19T15:11:20.441Z" },
 ]
 
 [[package]]

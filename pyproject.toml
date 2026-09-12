@@ -8,9 +8,11 @@ dependencies = [
     "Django>=6.1,<6.2",
     "django-storages[s3]>=1.14.6",
     "environs>=15.2.0",
+    "gunicorn>=23.0.0",
     "psycopg[pool]>=3.3.5",
     "sentry-sdk>=2.69.1",
     "wagtail>=8.0",
+    "wagtail-localize>=1.14.5",
 ]
 
 [dependency-groups]
@@ -39,6 +41,9 @@ target-version = "py313"
 
 [tool.ruff.lint]
 select = ["F", "E", "W", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"m5ka/settings/*.py" = ["F403", "F405"]
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false

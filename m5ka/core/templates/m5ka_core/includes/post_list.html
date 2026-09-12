@@ -1,0 +1,19 @@
+{% load i18n wagtailcore_tags wagtailimages_tags %}
+<h2 class="blog-title"><span>ls</span> {% trans 'posts' %}<span>/</span></h2>
+{% for post in posts %}
+    <a class="page-link" href="{% pageurl post %}">
+        {% if post.headline_image %}
+            {% image post.headline_image fill-400x300 format-webp as post_image %}
+            <img class="page-link__image" src="{{ post_image.url }}" alt="{{ post_image.alt }}" />
+        {% endif %}
+        <div class="page-link__body">
+            <div class="page-link__title">{{ post.title }}</div>
+            {% if post.search_description or post.body %}
+                <div class="page-link__excerpt">
+                    {# so this is kinda rudimentary but i'll maybe figure out a nicer way to get excerpts down the line.. #}
+                    {{ post.search_description|default:post.body|first|truncatechars:240 }}
+                </div>
+            {% endif %}
+        </div>
+    </a>
+{% endfor %}

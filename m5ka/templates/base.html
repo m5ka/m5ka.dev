@@ -1,6 +1,8 @@
-{% load static wagtailcore_tags wagtailuserbar %}
+{% load i18n static wagtailcore_tags wagtailuserbar %}
+{% wagtail_site as current_site %}
+{% get_current_language as current_language %}
 <!doctype html>
-<html lang="en">
+<html lang="{{ current_language }}">
     <head>
         <meta charset="utf-8" />
         <title>
@@ -8,7 +10,6 @@
             {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
             {% endblock %}
             {% block title_suffix %}
-            {% wagtail_site as current_site %}
             {% if current_site and current_site.site_name %}{% block title_separator %}- {% endblock title_separator %}{{ current_site.site_name }}{% endif %}
             {% endblock %}
         </title>
@@ -26,28 +27,40 @@
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
         <header class="header">
-            <a href="/" class="header__brand">m5ka<span>.dev</span></a>
+            <a href="{% pageurl current_site.root_page.localized %}" class="header__brand">m5ka<span>.dev</span></a>
+            {% if page %}
+                <div class="header__translations">
+                    {% for translation in page.get_translations.live %}
+                        <a class="header__translation" href="{% pageurl translation %}" rel="alternate" hreflang="{{ translation.locale.language_code }}">
+                            <img width="24" src="{% static 'images/locales/'|add:translation.locale.language_code|add:'.png' %}" alt="{{ translation.locale.language_code }}">
+                            {{ translation.locale.language_name_local|lower }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <nav class="header__nav">
                 {% for item in settings.m5ka_core.NavigationSettings.header_links %}
-                    <a class="header__nav-item" href="{% pageurl item.value %}">{{ item.value.title }}</a>
+                    <a class="header__nav-item" href="{% pageurl item.value.localized %}">{{ item.value.localized.title }}</a>
                 {% endfor %}
             </nav>
         </header>
+        {% block pre_content %}{% endblock pre_content %}
         {% block content_wrapper %}
             <main class="{% block content_wrapper_class %}main{% endblock content_wrapper_class %}">
                 {% block content %}{% endblock content %}
             </main>
         {% endblock content_wrapper %}
+        {% block post_content %}{% endblock post_content %}
         <footer class="footer">
             <div class="footer__container">
                 <nav class="footer__nav"></nav>
-                {% if settings.m5ka_core.CustomisationSettings.footer_text %}
+                {% if settings.m5ka_core.SocialSettings.site_copy.footer_text %}
                     <div class="footer__content">
-                        {{ settings.m5ka_core.CustomisationSettings.footer_text|safe }}
+                        {{ settings.m5ka_core.SocialSettings.site_copy.footer_text|safe }}
                     </div>
                 {% endif %}
-                {% if settings.m5ka_core.CustomisationSettings.copyright_author %}
-                    <p class="footer__copyright">&copy; {% now "Y" %} {{ settings.m5ka_core.CustomisationSettings.copyright_author }}</p>
+                {% if settings.m5ka_core.SocialSettings.copyright_author %}
+                    <p class="footer__copyright">&copy; {% now "Y" %} {{ settings.m5ka_core.SocialSettings.copyright_author }}</p>
                 {% endif %}
             </div>
         </footer>

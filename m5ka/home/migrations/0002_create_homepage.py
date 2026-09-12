@@ -14,7 +14,7 @@ def create_homepage(apps, schema_editor):
         model="page", app_label="wagtailcore"
     )
     Page.objects.filter(
-        content_type=page_content_type, slug="m5ka_home", depth=2
+        content_type=page_content_type, slug="home", depth=2
     ).delete()
 
     # Create content type for homepage model
@@ -26,7 +26,7 @@ def create_homepage(apps, schema_editor):
     homepage = HomePage.objects.create(
         title="Home",
         draft_title="Home",
-        slug="m5ka_home",
+        slug="home",
         content_type=homepage_content_type,
         path="00010001",
         depth=2,
@@ -45,7 +45,7 @@ def remove_homepage(apps, schema_editor):
 
     # Delete the default homepage
     # Page and Site objects CASCADE
-    HomePage.objects.filter(slug="m5ka_home", depth=2).delete()
+    HomePage.objects.filter(slug="home", depth=2).delete()
 
     # Delete content type for homepage model
     ContentType.objects.filter(model="homepage", app_label="m5ka_home").delete()

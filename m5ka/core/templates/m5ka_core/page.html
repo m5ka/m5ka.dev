@@ -1,5 +1,12 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block pre_content %}
+    {% if page.headline_image %}
+        {% image page.headline_image fill-1920x480 format-webp as headline_image %}
+        <img src="{{ headline_image.url }}" alt="{{ headline_image.alt }}" class="headline-image" draggable="false">
+    {% endif %}
+{% endblock pre_content %}
 
 {% block content %}
     <h2 class="main__title">{{ page.title }}</h2>

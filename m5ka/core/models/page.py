@@ -11,6 +11,4 @@ class Page(WagtailPage):
     parent_page_types = ["m5ka_core.Page", "m5ka_home.HomePage"]
     subpage_types = ["m5ka_core.Page"]
 
-    content_panels = WagtailPage.content_panels + [
-        FieldPanel("body", icon="pilcrow"),
-    ]
+    content_panels = WagtailPage.content_panels + [FieldPanel("body", icon="pilcrow")]

@@ -1,0 +1,48 @@
+# Local development friendly compose config
+name: m5ka
+services:
+  m5ka:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - M5KA_BASE_URL=http://localhost:8000
+      - M5KA_CSRF_ORIGINS=http://localhost:8000
+      - M5KA_ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - DJANGO_SETTINGS_MODULE=m5ka.settings.dev
+      - M5KA_POSTGRES_HOST=postgres
+      - M5KA_POSTGRES_PORT=5432
+      - M5KA_POSTGRES_NAME=m5ka
+      - M5KA_POSTGRES_USER=m5ka
+      - M5KA_POSTGRES_PASSWORD=m5ka
+      - M5KA_SECRET_KEY=m5ka-insecure-local-key
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      # keep image venv; host .venv must not shadow it
+      - /app/.venv
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=m5ka
+      - POSTGRES_USER=m5ka
+      - POSTGRES_PASSWORD=m5ka
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U m5ka -d m5ka"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+volumes:
+  postgres_data:

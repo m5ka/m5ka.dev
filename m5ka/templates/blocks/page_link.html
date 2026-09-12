@@ -1,5 +1,10 @@
 {% load wagtailcore_tags %}
 <a class="page-link" href="{% pageurl value %}">
     <div class="page-link__title">{{ value.title }}</div>
-    {% if value.search_description %}<div class="page-link__excerpt">{{ value.search_description }}</div>{% endif %}
+    {% if value.search_description or value.body %}
+        <div class="page-link__excerpt">
+            {# so this is kinda rudimentary but i'll maybe figure out a nicer way to get excerpts down the line.. #}
+            {{ value.search_description|default:value.body|first|truncatechars:240 }}
+        </div>
+    {% endif %}
 </a>

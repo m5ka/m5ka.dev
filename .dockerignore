@@ -9,6 +9,7 @@ __pycache__
 .DS_Store
 *.swp
 /venv/
+.venv/
 /tmp/
 /.vagrant/
 /Vagrantfile.local
@@ -37,3 +38,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Local env
+.env
