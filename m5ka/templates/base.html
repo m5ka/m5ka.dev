@@ -1,0 +1,57 @@
+{% load static wagtailcore_tags wagtailuserbar %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}
+            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
+            {% endblock %}
+            {% block title_suffix %}
+            {% wagtail_site as current_site %}
+            {% if current_site and current_site.site_name %}{% block title_separator %}- {% endblock title_separator %}{{ current_site.site_name }}{% endif %}
+            {% endblock %}
+        </title>
+        {% if page.search_description %}
+        <meta name="description" content="{{ page.search_description }}" />
+        {% endif %}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {% if request.in_preview_panel %}
+        <base target="_blank">
+        {% endif %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/m5ka.css' %}">
+        {% block extra_css %}{% endblock %}
+    </head>
+
+    <body class="{% block body_class %}{% endblock %}">
+        {% wagtailuserbar %}
+        <header class="header">
+            <a href="/" class="header__brand">m5ka<span>.dev</span></a>
+            <nav class="header__nav">
+                {% for item in settings.m5ka_core.NavigationSettings.header_links %}
+                    <a class="header__nav-item" href="{% pageurl item.value %}">{{ item.value.title }}</a>
+                {% endfor %}
+            </nav>
+        </header>
+        {% block content_wrapper %}
+            <main class="{% block content_wrapper_class %}main{% endblock content_wrapper_class %}">
+                {% block content %}{% endblock content %}
+            </main>
+        {% endblock content_wrapper %}
+        <footer class="footer">
+            <div class="footer__container">
+                <nav class="footer__nav"></nav>
+                {% if settings.m5ka_core.CustomisationSettings.footer_text %}
+                    <div class="footer__content">
+                        {{ settings.m5ka_core.CustomisationSettings.footer_text|safe }}
+                    </div>
+                {% endif %}
+                {% if settings.m5ka_core.CustomisationSettings.copyright_author %}
+                    <p class="footer__copyright">&copy; {% now "Y" %} {{ settings.m5ka_core.CustomisationSettings.copyright_author }}</p>
+                {% endif %}
+            </div>
+        </footer>
+        <script src="{% static 'js/m5ka.js' %}" type="text/javascript"></script>
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>

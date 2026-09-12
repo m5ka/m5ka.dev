@@ -1,0 +1,8 @@
+<figure class="quote">
+    <blockquote>{{ value.text }}</blockquote>
+    <figcaption>
+        — {{ value.quotee }}{% if value.quotee_qualifier %},
+            <span class="qualifier">{{ value.quotee_qualifier }}</span>
+        {% endif %}
+    </figcaption>
+</figure>

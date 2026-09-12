@@ -1,0 +1,11 @@
+{% load wagtailimages_tags %}
+<figure class="image image--{{ value.size }}">
+    {% if value.size == "thumb" %}
+        {% image value.image max-380x380 class="image__image" %}
+    {% else %}
+        {% image value.image width-1200 class="image__image" %}
+    {% endif %}
+    {% if value.caption %}
+        <figcaption class="image__caption">{{ value.caption }}</figcaption>
+    {% endif %}
+</figure>

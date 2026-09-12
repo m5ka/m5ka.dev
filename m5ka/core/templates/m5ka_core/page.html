@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <h2 class="main__title">{{ page.title }}</h2>
+    {% for block in page.body %}{% include_block block %}{% endfor %}
+{% endblock content %}

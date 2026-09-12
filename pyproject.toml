@@ -1,0 +1,51 @@
+[project]
+name = "m5ka"
+version = "0.1.0"
+description = "m5ka's personal website"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "Django>=6.1,<6.2",
+    "django-storages[s3]>=1.14.6",
+    "environs>=15.2.0",
+    "psycopg[pool]>=3.3.5",
+    "sentry-sdk>=2.69.1",
+    "wagtail>=8.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-django>=4.14.0",
+    "ruff>=0.16.6",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "m5ka.settings.dev"
+
+[tool.ruff]
+include = [
+  "pyproject.toml",
+  "m5ka/**/*.py",
+  "manage.py"
+]
+exclude = [
+  "m5ka/core/migrations/*.py",
+  "m5ka/home/migrations/*.py",
+]
+line-length = 88
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = true
+docstring-code-format = true
+docstring-code-line-length = "dynamic"

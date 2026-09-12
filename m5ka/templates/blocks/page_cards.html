@@ -1,0 +1,6 @@
+{% load wagtailcore_tags %}
+<div class="page-cards">
+    {% for item in value %}
+        {% include "blocks/page_link.html" with value=item %}
+    {% endfor %}
+</div>

@@ -1,0 +1,50 @@
+# Coolify-compatible docker compose setup
+name: m5ka
+services:
+  m5ka:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: >
+      sh -c "
+      python manage.py migrate --noinput &&
+      python manage.py collectstatic --noinput &&
+      gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 m5ka.core.wsgi:application
+      "
+    environment:
+      - M5KA_BASE_URL=$SERVICE_URL_M5KA
+      - M5KA_CSRF_ORIGINS=$SERVICE_URL_M5KA
+      - M5KA_ALLOWED_HOSTS=$SERVICE_FQDN_M5KA
+      - DJANGO_SETTINGS_MODULE=m5ka.settings.production
+      - M5KA_STATIC_URL=/
+      - M5KA_POSTGRES_HOST=postgres
+      - M5KA_POSTGRES_PORT=5432
+      - M5KA_POSTGRES_NAME=m5ka
+      - M5KA_POSTGRES_USER=$SERVICE_USER_POSTGRES
+      - M5KA_POSTGRES_PASSWORD=$SERVICE_PASSWORD_POSTGRES
+      - M5KA_SECRET_KEY=$SERVICE_BASE64_SECRET
+      - M5KA_S3_BUCKET_NAME_MEDIA=${S3_BUCKET_NAME_MEDIA:?}
+      - M5KA_S3_BUCKET_NAME_STATIC=${S3_BUCKET_NAME_STATIC:?}
+      - M5KA_S3_ENDPOINT_URL=${S3_ENDPOINT:?}
+      - M5KA_S3_ACCESS_KEY=${S3_ACCESS_KEY:?}
+      - M5KA_S3_SECRET_KEY=${S3_SECRET_KEY:?}
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=m5ka
+      - POSTGRES_USER=$SERVICE_USER_POSTGRES
+      - POSTGRES_PASSWORD=$SERVICE_PASSWORD_POSTGRES
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d m5ka"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+volumes:
+  postgres_data:
