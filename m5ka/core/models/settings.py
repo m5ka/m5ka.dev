@@ -7,9 +7,8 @@ from django.db.models import (
 )
 from django.utils.functional import cached_property
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
-from wagtail.blocks import PageChooserBlock
 from wagtail.contrib.settings.models import BaseGenericSetting, register_setting
-from wagtail.fields import RichTextField, StreamField
+from wagtail.fields import RichTextField
 from wagtail.models import Locale, TranslatableMixin
 from wagtail.snippets.models import register_snippet
 
@@ -85,25 +84,3 @@ class SocialSettings(BaseGenericSetting):
     @cached_property
     def site_copy(self):
         return SiteCopy.objects.filter(locale=Locale.get_active()).first()
-
-
-@register_setting(icon="link")
-class NavigationSettings(BaseGenericSetting):
-    header_links = StreamField(
-        [("page", PageChooserBlock(icon="doc-empty"))], blank=True
-    )
-    hamburger_links = StreamField(
-        [("page", PageChooserBlock(icon="doc-empty"))], blank=True
-    )
-    footer_links = StreamField(
-        [("page", PageChooserBlock(icon="doc-empty"))], blank=True
-    )
-
-    panels = [
-        FieldPanel("header_links", icon="title"),
-        FieldPanel("hamburger_links", icon="bars"),
-        FieldPanel("footer_links", icon="order-down"),
-    ]
-
-    class Meta:
-        verbose_name = "Navigation"

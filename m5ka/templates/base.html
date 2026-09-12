@@ -1,4 +1,4 @@
-{% load i18n static wagtailcore_tags wagtailuserbar %}
+{% load i18n m5ka_navigation static wagtailcore_tags wagtailuserbar %}
 {% wagtail_site as current_site %}
 {% get_current_language as current_language %}
 <!doctype html>
@@ -39,8 +39,9 @@
                 </div>
             {% endif %}
             <nav class="header__nav">
-                {% for item in settings.m5ka_core.NavigationSettings.header_links %}
-                    <a class="header__nav-item" href="{% pageurl item.value.localized %}">{{ item.value.localized.title }}</a>
+                {% menu_links "header" as header_links %}
+                {% for link in header_links %}
+                    <a class="header__nav-item" href="{% pageurl link.page %}">{{ link.text }}</a>
                 {% endfor %}
             </nav>
         </header>
