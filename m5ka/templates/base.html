@@ -60,8 +60,8 @@
                         {{ settings.m5ka_core.SocialSettings.site_copy.footer_text|safe }}
                     </div>
                 {% endif %}
-                {% if settings.m5ka_core.SocialSettings.copyright_author %}
-                    <p class="footer__copyright">&copy; {% now "Y" %} {{ settings.m5ka_core.SocialSettings.copyright_author }}</p>
+                {% if settings.m5ka_core.SocialSettings.site_copy.copyright_author %}
+                    <p class="footer__copyright">&copy; {% now "Y" %} {{ settings.m5ka_core.SocialSettings.site_copy.copyright_author }}</p>
                 {% endif %}
             </div>
         </footer>
