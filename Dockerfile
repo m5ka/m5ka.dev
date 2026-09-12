@@ -30,6 +30,6 @@ COPY --chown=wagtail:wagtail pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev --no-install-project
 
 COPY --chown=wagtail:wagtail . .
-RUN find m5ka/locale -name '*.po' -exec sh -c 'msgfmt -o "${0%.po}.mo" "$0"'
+RUN find m5ka/locale -name '*.po' -exec sh -c 'msgfmt -o "${0%.po}.mo" "$0"' {} \;
 
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 m5ka.core.wsgi:application
