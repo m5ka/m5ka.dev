@@ -2,25 +2,12 @@ import pytest
 from django.core.exceptions import ValidationError
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
+from django.template import Context, Template
 from django.utils import translation
-from wagtail.models import Locale, Page
+from wagtail.models import Page
 
-from m5ka.core.models import Menu, MenuItem
-
-
-@pytest.fixture
-def en():
-    return Locale.objects.get(language_code="en")
-
-
-@pytest.fixture
-def pl():
-    return Locale.objects.create(language_code="pl")
-
-
-@pytest.fixture
-def root():
-    return Page.objects.get(depth=1)
+from m5ka.core.models import Menu
+from m5ka.core.tests.utils import create_menu, publish_translation
 
 
 @pytest.fixture
@@ -31,34 +18,6 @@ def cv(root):
 @pytest.fixture
 def blog(root):
     return root.add_child(instance=Page(title="Blog", slug="blog"))
-
-
-@pytest.fixture
-def static_storage(settings):
-    settings.STORAGES = {
-        **settings.STORAGES,
-        "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
-        },
-    }
-
-
-def publish_translation(page, locale, title):
-    translated = page.copy_for_translation(locale)
-    translated.title = title
-    translated.save_revision().publish()
-    translated.refresh_from_db()
-    return translated
-
-
-def create_menu(handle, locale, *items):
-    menu = Menu(handle=handle, locale=locale)
-    menu.items = [
-        MenuItem(page=page, label=label, sort_order=sort_order)
-        for sort_order, (page, label) in enumerate(items)
-    ]
-    menu.save()
-    return menu
 
 
 def texts(links):
@@ -119,9 +78,7 @@ class TestMenuLinks:
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("static_storage")
-def test_header_renders_menu_links(client, en, cv):
-    home = Page.objects.get(slug="home")
+def test_header_renders_menu_links(client, en, home, cv):
     create_menu("header", en, (cv, "CV"), (home, ""))
 
     response = client.get(home.url)
@@ -134,7 +91,22 @@ def test_header_renders_menu_links(client, en, cv):
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("static_storage")
+def test_menu_links_template_tag(en, cv, blog):
+    create_menu("footer", en, (cv, "CV"), (blog, ""))
+    template = Template(
+        "{% load m5ka_navigation %}{% menu_links 'footer' as links %}"
+        "{% for link in links %}{{ link.text }};{% endfor %}"
+    )
+
+    assert template.render(Context()) == "CV;Blog;"
+
+
+@pytest.mark.django_db
+def test_menu_str(en):
+    assert str(create_menu("hamburger", en)) == f"Hamburger ({en})"
+
+
+@pytest.mark.django_db
 def test_menu_snippet_add_view(admin_client):
     response = admin_client.get("/admin/snippets/m5ka_core/menu/add/")
 
