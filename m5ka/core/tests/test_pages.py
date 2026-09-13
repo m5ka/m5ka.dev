@@ -115,6 +115,21 @@ class TestBaseTemplate:
 
         assert '<html lang="en">' in response.content.decode()
 
+    def test_renders_goatcounter_script(self, client, home, settings):
+        settings.GOATCOUNTER_URL = "https://stats.example.com"
+
+        response = client.get(home.url)
+
+        assert (
+            '<script data-goatcounter="https://stats.example.com/count" async '
+            'src="https://stats.example.com/count.js"></script>'
+        ) in response.content.decode()
+
+    def test_omits_goatcounter_script_when_unset(self, client, home):
+        response = client.get(home.url)
+
+        assert "data-goatcounter" not in response.content.decode()
+
 
 @pytest.mark.django_db
 class TestTranslations:

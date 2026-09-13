@@ -4,7 +4,7 @@ from wagtail.models import Page
 
 from m5ka.core.models import BlogPost, BlogRoot
 from m5ka.core.models import Page as ContentPage
-from m5ka.core.tests.utils import create_page, create_post
+from m5ka.core.tests.utils import create_page, create_post, make_private
 from m5ka.home.models import HomePage
 
 
@@ -65,6 +65,12 @@ class TestBlogRootPosts:
 
         assert titles(blog_root.posts) == ["Published"]
 
+    def test_excludes_private_posts(self, blog_root):
+        create_post(blog_root, "Published")
+        make_private(create_post(blog_root, "Private"))
+
+        assert titles(blog_root.posts) == ["Published"]
+
     def test_empty_when_no_posts(self, blog_root):
         assert not blog_root.posts.exists()
 
@@ -81,6 +87,18 @@ class TestHomePagePosts:
         create_post(blog_root, "Draft", live=False)
 
         assert titles(home.posts) == ["Published"]
+
+    def test_excludes_private_posts(self, home, blog_root):
+        create_post(blog_root, "Published")
+        make_private(create_post(blog_root, "Private"))
+
+        assert titles(home.posts) == ["Published"]
+
+    def test_excludes_posts_of_private_blog(self, home, blog_root):
+        create_post(blog_root, "Published")
+        make_private(blog_root)
+
+        assert titles(home.posts) == []
 
     def test_excludes_non_post_pages(self, home, blog_root):
         create_page(home, "About")
@@ -133,13 +151,13 @@ class TestBlogRootView:
         assert "page-link__excerpt" not in content
         assert "An excerpt from the body" not in content
 
-    def test_truncates_long_excerpts(self, client, blog_root):
+    def test_renders_long_excerpts_in_full(self, client, blog_root):
         create_post(blog_root, "Post", search_description="x" * 500)
 
         response = client.get(blog_root.url)
 
         assert (
-            f'<div class="page-link__excerpt">{"x" * 239}…</div>'
+            f'<div class="page-link__excerpt">{"x" * 500}</div>'
             in response.content.decode()
         )
 
@@ -212,6 +230,24 @@ class TestHomePageView:
         assert 'class="blog-title"' in content
         assert f'href="{post.url}"' in content
         assert "Draft" not in content
+
+    def test_does_not_link_private_posts(self, client, home, blog_root):
+        create_post(blog_root, "Published")
+        private = make_private(create_post(blog_root, "Private"))
+
+        response = client.get(home.url)
+
+        content = response.content.decode()
+        assert "Private" not in content
+        assert f'href="{private.url}"' not in content
+
+    def test_private_post_asks_for_password(self, client, blog_root):
+        post = make_private(create_post(blog_root, "Private", search_description="x"))
+
+        response = client.get(post.url)
+
+        assert response.status_code == 200
+        assertTemplateUsed(response, "wagtailcore/password_required.html")
 
     def test_omits_post_list_without_posts(self, client, home, blog_root):
         create_post(blog_root, "Draft", live=False)

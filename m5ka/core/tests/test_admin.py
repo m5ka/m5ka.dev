@@ -1,9 +1,34 @@
+import importlib
+from io import StringIO
+
 import pytest
+from axes.models import AccessAttempt
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.core.management import call_command
+from django.urls import clear_url_caches
 from wagtail.models import Page
 from wagtail.test.utils.form_data import nested_form_data, rich_text, streamfield
 
+from m5ka.core import urls
 from m5ka.core.models import BlogPost, User
+
+
+@pytest.fixture
+def urlconf(settings):
+    """
+    The URLconf checks DEBUG at import time, so it's reloaded to pick up a change.
+    """
+    original_debug = settings.DEBUG
+
+    def reload(debug):
+        settings.DEBUG = debug
+        importlib.reload(urls)
+        clear_url_caches()
+
+    yield reload
+    reload(original_debug)
 
 
 def test_custom_user_model_is_active():
@@ -27,6 +52,13 @@ class TestUser:
         assert user.is_staff
         assert user.is_superuser
 
+    def test_passwords_shorter_than_12_characters_are_rejected(self):
+        with pytest.raises(ValidationError):
+            validate_password("xK9#mQ2$vL7")
+
+    def test_passwords_of_12_characters_are_accepted(self):
+        validate_password("xK9#mQ2$vL7&")
+
 
 @pytest.mark.django_db
 class TestAdminAccess:
@@ -39,8 +71,15 @@ class TestAdminAccess:
     def test_wagtail_admin_dashboard(self, admin_client):
         assert admin_client.get("/admin/").status_code == 200
 
-    def test_django_admin(self, admin_client):
+    def test_django_admin_is_available_in_debug(self, admin_client, urlconf):
+        urlconf(debug=True)
+
         assert admin_client.get("/django-admin/").status_code == 200
+
+    def test_django_admin_is_not_available_in_production(self, admin_client, urlconf):
+        urlconf(debug=False)
+
+        assert admin_client.get("/django-admin/").status_code == 404
 
 
 @pytest.mark.django_db
@@ -114,3 +153,33 @@ def test_publish_blog_post_through_admin(admin_client, client, blog_root):
     assert post.live
     assert [block.block_type for block in post.body] == ["heading", "paragraph"]
     assert "Written in the admin" in client.get(blog_root.url).content.decode()
+
+
+@pytest.mark.django_db
+class TestLoginRateLimiting:
+    def failed_login(self, client):
+        return client.post(
+            "/admin/login/", {"username": "admin", "password": "wrong-password"}
+        )
+
+    def test_wagtail_login_locks_out_after_failure_limit(self, client, settings):
+        User.objects.create_superuser(username="admin", password="hunter2hunter2")
+
+        for _ in range(settings.AXES_FAILURE_LIMIT - 1):
+            assert self.failed_login(client).status_code == 200
+
+        assert self.failed_login(client).status_code == 429
+        assert AccessAttempt.objects.filter(username="admin").exists()
+
+    def test_lockout_can_be_lifted_with_axes_reset(self, client, settings):
+        User.objects.create_superuser(username="admin", password="hunter2hunter2")
+        for _ in range(settings.AXES_FAILURE_LIMIT):
+            self.failed_login(client)
+
+        call_command("axes_reset_username", "admin", stdout=StringIO())
+
+        response = client.post(
+            "/admin/login/", {"username": "admin", "password": "hunter2hunter2"}
+        )
+        assert response.status_code == 302
+        assert not AccessAttempt.objects.exists()

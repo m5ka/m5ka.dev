@@ -10,7 +10,7 @@ services:
       sh -c "
       python manage.py migrate --noinput &&
       python manage.py collectstatic --noinput &&
-      gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 m5ka.core.wsgi:application
+      gunicorn --bind :8080 --workers 2 --threads 4 --timeout 30 --graceful-timeout 30 m5ka.core.wsgi:application
       "
     environment:
       - M5KA_BASE_URL=$SERVICE_URL_M5KA
@@ -29,6 +29,8 @@ services:
       - M5KA_S3_ENDPOINT_URL=${S3_ENDPOINT:?}
       - M5KA_S3_ACCESS_KEY=${S3_ACCESS_KEY:?}
       - M5KA_S3_SECRET_KEY=${S3_SECRET_KEY:?}
+      - M5KA_LASTFM_API_KEY=${LASTFM_API_KEY:-}
+      - M5KA_GOATCOUNTER_URL=${GOATCOUNTER_URL:-}
     depends_on:
       postgres:
         condition: service_healthy

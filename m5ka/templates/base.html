@@ -57,7 +57,7 @@
                 <nav class="footer__nav"></nav>
                 {% if settings.m5ka_core.SocialSettings.site_copy.footer_text %}
                     <div class="footer__content">
-                        {{ settings.m5ka_core.SocialSettings.site_copy.footer_text|safe }}
+                        {{ settings.m5ka_core.SocialSettings.site_copy.footer_text|richtext }}
                     </div>
                 {% endif %}
                 {% if settings.m5ka_core.SocialSettings.site_copy.copyright_author %}
@@ -66,6 +66,9 @@
             </div>
         </footer>
         <script src="{% static 'js/m5ka.js' %}" type="text/javascript"></script>
+        {% if goatcounter_url and not request.in_preview_panel %}
+            <script data-goatcounter="{{ goatcounter_url }}/count" async src="{{ goatcounter_url }}/count.js"></script>
+        {% endif %}
         {% block extra_js %}{% endblock %}
     </body>
 </html>

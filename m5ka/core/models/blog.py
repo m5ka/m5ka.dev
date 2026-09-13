@@ -33,4 +33,4 @@ class BlogRoot(Page):
 
     @cached_property
     def posts(self):
-        return BlogPost.objects.live().child_of(self)
+        return BlogPost.objects.live().public().child_of(self)

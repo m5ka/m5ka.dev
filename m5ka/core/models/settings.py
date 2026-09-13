@@ -52,15 +52,6 @@ class SocialSettings(BaseGenericSetting):
         related_name="+",
         help_text="An avatar image to appear on the homepage",
     )
-    goatcounter_hostname = CharField(
-        max_length=64,
-        blank=True,
-        verbose_name="GoatCounter hostname",
-        help_text=(
-            "If you are tracking metrics via GoatCounter, this should be just the "
-            "hostname section of the URL - e.g. goatcounter.example.com"
-        ),
-    )
 
     panels = [
         MultiFieldPanel(
@@ -73,9 +64,6 @@ class SocialSettings(BaseGenericSetting):
             icon="user",
         ),
         FieldPanel("homepage_avatar"),
-        MultiFieldPanel(
-            [FieldPanel("goatcounter_hostname")], heading="Metrics", icon="thumbtack"
-        ),
     ]
 
     class Meta:

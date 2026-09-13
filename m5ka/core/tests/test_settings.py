@@ -55,6 +55,17 @@ class TestFooter:
         assert '<div class="footer__content">' in content
         assert "Made with <b>love</b>" in content
 
+    def test_expands_internal_links_in_footer_text(self, client, en, home):
+        create_site_copy(
+            en, footer_text=f'<p><a linktype="page" id="{home.pk}">Home</a></p>'
+        )
+
+        response = client.get(home.url)
+
+        content = response.content.decode()
+        assert f'<a href="{home.url}">Home</a>' in content
+        assert 'linktype="page"' not in content
+
     def test_renders_copyright(self, client, en, home):
         create_site_copy(en, copyright_author="m5ka")
 
@@ -113,7 +124,8 @@ class TestHomePageHero:
         assert "hero__heading" not in content
         assert "hero__subheading" not in content
 
-    def test_renders_social_links(self, client, home):
+    def test_renders_social_links(self, client, home, settings):
+        settings.LASTFM_API_KEY = "secret-key"
         SocialSettings.objects.create(
             github_username="gh-user",
             linkedin_username="li-user",
@@ -126,9 +138,21 @@ class TestHomePageHero:
         assert 'href="https://github.com/gh-user"' in content
         assert 'href="https://linkedin.com/in/li-user"' in content
         assert 'href="https://last.fm/user/fm-user"' in content
-        assert 'data-lastfm-username="fm-user"' in content
+        assert 'data-endpoint="/api/now-playing/"' in content
+        assert "secret-key" not in content
 
-    def test_omits_unset_social_links(self, client, home):
+    def test_omits_now_playing_without_api_key(self, client, home, settings):
+        settings.LASTFM_API_KEY = ""
+        SocialSettings.objects.create(lastfm_username="fm-user")
+
+        response = client.get(home.url)
+
+        content = response.content.decode()
+        assert "last.fm" not in content
+        assert 'id="nowlistening"' not in content
+
+    def test_omits_unset_social_links(self, client, home, settings):
+        settings.LASTFM_API_KEY = "secret-key"
         SocialSettings.objects.create(github_username="gh-user")
 
         response = client.get(home.url)

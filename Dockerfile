@@ -11,7 +11,8 @@ ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PROJECT_ENVIRONMENT=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    DJANGO_SETTINGS_MODULE="m5ka.settings.production"
 
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
     build-essential \
@@ -32,4 +33,4 @@ RUN uv sync --locked --no-dev --no-install-project
 COPY --chown=wagtail:wagtail . .
 RUN find m5ka/locale -name '*.po' -exec sh -c 'msgfmt -o "${0%.po}.mo" "$0"' {} \;
 
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 m5ka.core.wsgi:application
+CMD exec gunicorn --bind :$PORT --workers 2 --threads 4 --timeout 30 --graceful-timeout 30 m5ka.core.wsgi:application

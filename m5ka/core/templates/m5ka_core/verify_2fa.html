@@ -1,0 +1,51 @@
+{% extends "wagtailadmin/admin_base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% trans "Two-factor authentication" %}{% endblock %}
+{% block bodyclass %}login{% endblock %}
+
+{% block furniture %}
+    <main class="content-wrapper" id="main">
+        <h1>{% trans "Enter your two-factor authentication code" %}</h1>
+
+        <div class="messages" role="status">
+            {% if not form.has_devices or form.errors %}
+                <ul>
+                    {% if not form.has_devices %}
+                        <li class="error">{% trans "No authenticator app has been set up for your account. Ask the site administrator to run the setup_2fa command for you." %}</li>
+                    {% endif %}
+                    {% for error in form.non_field_errors %}
+                        <li class="error">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        {% if form.has_devices %}
+            <form class="login-form" action="{% url 'verify_2fa' %}" method="post" autocomplete="off" novalidate>
+                {% csrf_token %}
+                {% url 'wagtailadmin_home' as home_url %}
+                <input type="hidden" name="next" value="{{ next|default:home_url }}" />
+
+                {% if form.otp_device.is_hidden %}
+                    {{ form.otp_device }}
+                {% else %}
+                    {% formattedfield form.otp_device %}
+                {% endif %}
+                {% formattedfield form.otp_token %}
+
+                <footer class="form-actions">
+                    <button type="submit" class="button">{% trans "Verify" %}</button>
+                </footer>
+            </form>
+        {% endif %}
+
+        <form action="{% url 'wagtailadmin_logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="button button-secondary">{% trans "Sign out" %}</button>
+        </form>
+
+        <div class="login-logo">
+            {% include "wagtailadmin/logo.html" with wordmark="True" %}
+        </div>
+    </main>
+{% endblock %}

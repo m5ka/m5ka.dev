@@ -19,8 +19,9 @@ services:
       - M5KA_POSTGRES_USER=m5ka
       - M5KA_POSTGRES_PASSWORD=m5ka
       - M5KA_SECRET_KEY=m5ka-insecure-local-key
+      - M5KA_LASTFM_API_KEY=${LASTFM_API_KEY:-}
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - .:/app
       # keep image venv; host .venv must not shadow it
@@ -36,7 +37,7 @@ services:
       - POSTGRES_USER=m5ka
       - POSTGRES_PASSWORD=m5ka
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:

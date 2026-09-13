@@ -1,4 +1,5 @@
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from datetime import timedelta
 from pathlib import Path
 
 from environs import Env
@@ -48,6 +49,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
+    "axes",
 ]
 
 MIDDLEWARE = [
@@ -56,10 +60,13 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
+    "m5ka.core.middleware.RequireTwoFactorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "m5ka.core.urls"
@@ -76,6 +83,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "wagtail.contrib.settings.context_processors.settings",
+                "m5ka.core.context_processors.goatcounter",
+                "m5ka.core.context_processors.now_playing",
             ]
         },
     }
@@ -109,10 +118,35 @@ AUTH_PASSWORD_VALIDATORS = [
             "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
         )
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+
+# Login rate limiting
+# https://django-axes.readthedocs.io/en/latest/4_configuration.html
+
+AXES_FAILURE_LIMIT = env.int("AXES_FAILURE_LIMIT", 5)
+AXES_COOLOFF_TIME = timedelta(minutes=env.int("AXES_COOLOFF_MINUTES", 30))
+AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]
+AXES_RESET_ON_SUCCESS = True
+
+
+# Two-factor authentication
+# Admin users add an authenticator app with `manage.py setup_2fa <username>`.
+
+REQUIRE_2FA = False
+OTP_TOTP_ISSUER = "m5ka.dev"
 
 
 # User model
@@ -164,7 +198,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 # Wagtail settings
 
-WAGTAIL_SITE_NAME = env("SITE_NAME", "m5ka.dev")
+WAGTAIL_SITE_NAME = "m5ka.dev"
 
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
@@ -193,3 +227,14 @@ WAGTAILDOCS_EXTENSIONS = [
 
 # Maximum upload size for documents in bytes.
 WAGTAILDOCS_MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
+
+
+# Last.fm
+# Only used server-side by the now playing proxy, so it never reaches the browser.
+LASTFM_API_KEY = env("LASTFM_API_KEY", "")
+
+
+# GoatCounter
+# Analytics are off unless production configures an instance.
+
+GOATCOUNTER_URL = None

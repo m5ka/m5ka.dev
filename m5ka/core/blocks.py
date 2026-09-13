@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from wagtail.blocks import (
     CharBlock,
     ChoiceBlock,
@@ -48,7 +49,11 @@ class QuoteBlock(StructBlock):
 
 class YoutubeEmbedBlock(StructBlock):
     youtube_video_id = CharBlock(
-        label="YouTube video ID", help_text="This is just the part after ?v= in the URL"
+        label="YouTube video ID",
+        help_text="This is just the part after ?v= in the URL",
+        validators=[
+            RegexValidator(r"^[A-Za-z0-9_-]{11}$", "Enter the 11-character video ID")
+        ],
     )
 
     class Meta:

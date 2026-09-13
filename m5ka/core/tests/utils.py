@@ -1,4 +1,5 @@
 from django.utils.text import slugify
+from wagtail.models import PageViewRestriction
 
 from m5ka.core.models import BlogPost, Menu, MenuItem, SiteCopy
 from m5ka.core.models import Page as ContentPage
@@ -15,6 +16,13 @@ def create_page(parent, title, slug=None, live=True, model=ContentPage, **kwargs
 
 def create_post(blog_root, title, slug=None, live=True, **kwargs):
     return create_page(blog_root, title, slug, live, model=BlogPost, **kwargs)
+
+
+def make_private(page, password="secret"):
+    PageViewRestriction.objects.create(
+        page=page, restriction_type=PageViewRestriction.PASSWORD, password=password
+    )
+    return page
 
 
 def publish_translation(page, locale, title, copy_parents=False):

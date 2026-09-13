@@ -1,7 +1,7 @@
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from m5ka.core.tests.utils import create_page
+from m5ka.core.tests.utils import create_page, make_private
 
 
 def result_titles(response):
@@ -35,6 +35,23 @@ class TestSearchView:
 
         assert result_titles(response) == []
         assert "No results found" in response.content.decode()
+
+    def test_excludes_private_pages(self, client, home):
+        make_private(create_page(home, "Secret pineapples"))
+        create_page(home, "Public pineapples")
+
+        response = client.get("/search/", {"query": "pineapples"})
+
+        assert result_titles(response) == ["Public pineapples"]
+        assert "Secret pineapples" not in response.content.decode()
+
+    def test_excludes_pages_under_private_pages(self, client, home):
+        parent = make_private(create_page(home, "Members"))
+        create_page(parent, "Secret pineapples")
+
+        response = client.get("/search/", {"query": "pineapples"})
+
+        assert result_titles(response) == []
 
     def test_renders_search_description(self, client, home):
         create_page(home, "Pineapples", search_description="Spiky and sweet")

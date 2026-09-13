@@ -78,7 +78,8 @@ class TestM5kaBlocks:
     def test_renders_youtube_embed(self):
         html = render_stream(("youtube_embed", {"youtube_video_id": "dQw4w9WgXcQ"}))
 
-        assert 'src="https://www.youtube.com/embed/dQw4w9WgXcQ"' in html
+        assert 'src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"' in html
+        assert "www.youtube.com" not in html
 
     def test_paragraph_features(self):
         assert M5kaBlocks().child_blocks["paragraph"].features == [
@@ -134,6 +135,29 @@ class TestYoutubeEmbedBlock:
 
         with pytest.raises(StructBlockValidationError):
             block.clean(block.to_python({"youtube_video_id": ""}))
+
+    def test_accepts_valid_video_id(self):
+        block = YoutubeEmbedBlock()
+
+        value = block.clean(block.to_python({"youtube_video_id": "dQw4w9WgXcQ"}))
+
+        assert value["youtube_video_id"] == "dQw4w9WgXcQ"
+
+    @pytest.mark.parametrize(
+        "video_id",
+        [
+            "dQw4w9WgXc",
+            "dQw4w9WgXcQQ",
+            "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            'dQw4w9"><sc',
+            "../../evil1",
+        ],
+    )
+    def test_rejects_invalid_video_ids(self, video_id):
+        block = YoutubeEmbedBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"youtube_video_id": video_id}))
 
 
 @pytest.mark.django_db
