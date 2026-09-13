@@ -9,4 +9,4 @@ class HomePage(Page):
 
     @cached_property
     def posts(self):
-        return BlogPost.objects.descendant_of(self)
+        return BlogPost.objects.live().descendant_of(self)
