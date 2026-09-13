@@ -8,11 +8,8 @@
         {% endif %}
         <div class="page-link__body">
             <div class="page-link__title">{{ post.title }}</div>
-            {% if post.search_description or post.body %}
-                <div class="page-link__excerpt">
-                    {# so this is kinda rudimentary but i'll maybe figure out a nicer way to get excerpts down the line.. #}
-                    {{ post.search_description|default:post.body|first|truncatechars:240 }}
-                </div>
+            {% if post.search_description %}
+                <div class="page-link__excerpt">{{ post.search_description }}</div>
             {% endif %}
         </div>
     </a>
